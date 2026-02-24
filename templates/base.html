@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ExamEdge{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {% if request.session.user_id %}
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">Exam<span>Edge</span></a>
+    <ul class="nav-links">
+      {% if request.session.user_role == 'student' %}
+        <li><a href="/student/dashboard">Dashboard</a></li>
+        <li><a href="/student/exams">Exams</a></li>
+        <li><a href="/student/my-results">My Results</a></li>
+      {% elif request.session.user_role == 'teacher' %}
+        <li><a href="/teacher/dashboard">Dashboard</a></li>
+        <li><a href="/teacher/add-exam">New Exam</a></li>
+      {% endif %}
+    </ul>
+    <div class="nav-user">
+      <span class="nav-badge">{{ request.session.user_role }}</span>
+      <span style="color:var(--text2); font-size:0.9rem;">{{ request.session.user_name }}</span>
+      <a href="/logout" class="btn btn-secondary btn-sm">Logout</a>
+    </div>
+  </nav>
+  {% endif %}
+
+  {% if messages %}
+  <div class="alerts" id="alerts">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      {% if message.tags == 'error' %}⚠{% elif message.tags == 'success' %}✓{% else %}ℹ{% endif %}
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  <script>
+    setTimeout(() => {
+      const el = document.getElementById('alerts');
+      if (el) el.style.opacity = '0', el.style.transition = 'opacity 0.5s', setTimeout(() => el.remove(), 500);
+    }, 3500);
+  </script>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

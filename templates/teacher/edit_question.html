@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Edit Question — ExamEdge{% endblock %}
+{% block content %}
+<div class="page-wrapper" style="max-width:680px;">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Edit Question</h1>
+      <p class="page-subtitle">{{ question.exam.title }}</p>
+    </div>
+    <a href="/teacher/questions/{{ question.exam.id }}" class="btn btn-secondary">← Back</a>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Question Text</label>
+          <textarea name="question_text" class="form-control" required>{{ question.question_text }}</textarea>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div class="form-group">
+            <label class="form-label">Option 1</label>
+            <input type="text" name="option1" class="form-control" value="{{ question.option1 }}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option 2</label>
+            <input type="text" name="option2" class="form-control" value="{{ question.option2 }}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option 3</label>
+            <input type="text" name="option3" class="form-control" value="{{ question.option3 }}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option 4</label>
+            <input type="text" name="option4" class="form-control" value="{{ question.option4 }}" required>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
+          <div class="form-group">
+            <label class="form-label">Correct Answer</label>
+            <select name="correct_answer" class="form-control" required>
+              <option value="option1" {% if question.correct_answer == 'option1' %}selected{% endif %}>Option 1</option>
+              <option value="option2" {% if question.correct_answer == 'option2' %}selected{% endif %}>Option 2</option>
+              <option value="option3" {% if question.correct_answer == 'option3' %}selected{% endif %}>Option 3</option>
+              <option value="option4" {% if question.correct_answer == 'option4' %}selected{% endif %}>Option 4</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Marks</label>
+            <input type="number" name="marks" class="form-control" value="{{ question.marks }}" min="1" max="10" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Section</label>
+            <select name="section" class="form-control">
+              <option value="A" {% if question.section == 'A' %}selected{% endif %}>Section A</option>
+              <option value="B" {% if question.section == 'B' %}selected{% endif %}>Section B</option>
+              <option value="C" {% if question.section == 'C' %}selected{% endif %}>Section C</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Update Question</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

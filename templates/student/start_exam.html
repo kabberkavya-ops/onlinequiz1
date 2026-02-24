@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}{{ exam.title }} — Ready?{% endblock %}
+{% block content %}
+<div class="page-wrapper" style="max-width:640px;">
+  <div style="text-align:center; padding:3rem 0 2rem;">
+    <div style="font-size:3rem; margin-bottom:1rem;">📋</div>
+    <h1 class="page-title">{{ exam.title }}</h1>
+    <p style="color:var(--text3); margin-top:0.5rem;">Please read the instructions carefully</p>
+  </div>
+
+  <div class="card" style="margin-bottom:1.5rem;">
+    <div class="card-header">
+      <span style="font-weight:600;">Exam Details</span>
+    </div>
+    <div class="card-body">
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; text-align:center;">
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:1.8rem; color:var(--accent); font-weight:700;">{{ exam.duration }}</div>
+          <div style="font-size:0.8rem; color:var(--text3); margin-top:0.25rem;">Minutes</div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:1.8rem; color:var(--accent2); font-weight:700;">{{ total_questions }}</div>
+          <div style="font-size:0.8rem; color:var(--text3); margin-top:0.25rem;">Questions</div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:1.8rem; color:var(--accent3); font-weight:700;">{{ total_marks }}</div>
+          <div style="font-size:0.8rem; color:var(--text3); margin-top:0.25rem;">Total Marks</div>
+        </div>
+      </div>
+      {% if section_counts.A or section_counts.B or section_counts.C %}
+      <div class="divider"></div>
+      <div style="display:flex; gap:1rem; justify-content:center;">
+        {% if section_counts.A %}<span class="badge badge-gold">Section A: {{ section_counts.A }} Qs</span>{% endif %}
+        {% if section_counts.B %}<span class="badge badge-purple">Section B: {{ section_counts.B }} Qs</span>{% endif %}
+        {% if section_counts.C %}<span class="badge badge-teal">Section C: {{ section_counts.C }} Qs</span>{% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:2rem;">
+    <div class="card-header">
+      <span style="font-weight:600;">📌 Instructions</span>
+    </div>
+    <div class="card-body">
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:0.75rem;">
+        <li style="display:flex; gap:0.75rem; align-items:flex-start; color:var(--text2); font-size:0.9rem;">
+          <span style="color:var(--danger); flex-shrink:0; margin-top:0.1rem;">⚠</span>
+          <span>You can attempt this exam <strong style="color:var(--text);">only once</strong>. You cannot re-take it after submission.</span>
+        </li>
+        <li style="display:flex; gap:0.75rem; align-items:flex-start; color:var(--text2); font-size:0.9rem;">
+          <span style="color:var(--accent); flex-shrink:0; margin-top:0.1rem;">⏱</span>
+          <span>The timer starts as soon as you click "Begin Exam". The exam will <strong style="color:var(--text);">auto-submit</strong> when time runs out.</span>
+        </li>
+        <li style="display:flex; gap:0.75rem; align-items:flex-start; color:var(--text2); font-size:0.9rem;">
+          <span style="color:var(--accent2); flex-shrink:0; margin-top:0.1rem;">📝</span>
+          <span>All questions are MCQ. Select one option per question. You can navigate between questions freely.</span>
+        </li>
+        <li style="display:flex; gap:0.75rem; align-items:flex-start; color:var(--text2); font-size:0.9rem;">
+          <span style="color:var(--success); flex-shrink:0; margin-top:0.1rem;">✓</span>
+          <span>Results with section-wise marks will be shown immediately after submission.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:1rem; justify-content:center;">
+    <a href="/student/exams" class="btn btn-secondary btn-lg">Cancel</a>
+    <a href="/student/quiz/{{ exam.id }}" class="btn btn-primary btn-lg">Begin Exam →</a>
+  </div>
+</div>
+{% endblock %}

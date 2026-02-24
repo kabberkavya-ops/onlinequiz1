@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}{{ exam.title }} — Questions{% endblock %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">{{ exam.title }}</h1>
+      <p class="page-subtitle">{{ total_questions }} questions · {{ total_marks }} total marks · {{ exam.duration }} min</p>
+    </div>
+    <div style="display:flex; gap:0.75rem;">
+      <a href="/teacher/add-question/{{ exam.id }}" class="btn btn-primary">＋ Add Question</a>
+      <a href="/teacher/dashboard" class="btn btn-secondary">← Dashboard</a>
+    </div>
+  </div>
+
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}" style="margin-bottom:1rem;">{{ message }}</div>
+  {% endfor %}
+  {% endif %}
+
+  {% for section, questions in section_data.items %}
+  {% if questions %}
+  <div style="margin-bottom:2rem;">
+    <div class="question-section-label">Section {{ section }}</div>
+    {% for q in questions %}
+    <div class="question-item">
+      <div class="question-header">
+        <span class="question-number">Q{{ forloop.counter }}</span>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <span class="marks-badge">{{ q.marks }} mark{% if q.marks > 1 %}s{% endif %}</span>
+          <a href="/teacher/edit-question/{{ q.id }}" class="btn btn-secondary btn-sm">Edit</a>
+          <a href="/teacher/delete-question/{{ q.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this question?')">Delete</a>
+        </div>
+      </div>
+      <p class="question-text">{{ q.question_text }}</p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.85rem;">
+        <span style="padding:0.5rem 0.75rem; background:var(--bg3); border-radius:6px; border:1px solid {% if q.correct_answer == 'option1' %}rgba(109,223,176,0.4){% else %}var(--border){% endif %}; color:{% if q.correct_answer == 'option1' %}var(--success){% else %}var(--text2){% endif %};">
+          {% if q.correct_answer == 'option1' %}✓ {% endif %}{{ q.option1 }}
+        </span>
+        <span style="padding:0.5rem 0.75rem; background:var(--bg3); border-radius:6px; border:1px solid {% if q.correct_answer == 'option2' %}rgba(109,223,176,0.4){% else %}var(--border){% endif %}; color:{% if q.correct_answer == 'option2' %}var(--success){% else %}var(--text2){% endif %};">
+          {% if q.correct_answer == 'option2' %}✓ {% endif %}{{ q.option2 }}
+        </span>
+        <span style="padding:0.5rem 0.75rem; background:var(--bg3); border-radius:6px; border:1px solid {% if q.correct_answer == 'option3' %}rgba(109,223,176,0.4){% else %}var(--border){% endif %}; color:{% if q.correct_answer == 'option3' %}var(--success){% else %}var(--text2){% endif %};">
+          {% if q.correct_answer == 'option3' %}✓ {% endif %}{{ q.option3 }}
+        </span>
+        <span style="padding:0.5rem 0.75rem; background:var(--bg3); border-radius:6px; border:1px solid {% if q.correct_answer == 'option4' %}rgba(109,223,176,0.4){% else %}var(--border){% endif %}; color:{% if q.correct_answer == 'option4' %}var(--success){% else %}var(--text2){% endif %};">
+          {% if q.correct_answer == 'option4' %}✓ {% endif %}{{ q.option4 }}
+        </span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endfor %}
+
+  {% if total_questions == 0 %}
+  <div class="empty-state">
+    <div class="empty-state-icon">📝</div>
+    <div class="empty-state-title">No questions yet</div>
+    <p>Start building your question paper</p>
+    <a href="/teacher/add-question/{{ exam.id }}" class="btn btn-primary">Add First Question</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

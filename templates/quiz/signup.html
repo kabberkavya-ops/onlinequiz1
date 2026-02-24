@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up — ExamEdge{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-mark">ExamEdge</div>
+    </div>
+    <h2 class="auth-title">Create Account</h2>
+    <p class="auth-subtitle">Join as a student or teacher</p>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" style="margin-bottom:1rem;">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" name="name" class="form-control" placeholder="John Doe" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-control" placeholder="john@example.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" placeholder="Min 6 characters" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" name="confirm_password" class="form-control" placeholder="Repeat password" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">I am a...</label>
+        <div class="role-selector">
+          <div class="role-option">
+            <input type="radio" name="role" id="role-student" value="student" checked>
+            <label for="role-student" class="role-label">
+              <span class="role-icon">🎓</span>
+              <span>Student</span>
+            </label>
+          </div>
+          <div class="role-option">
+            <input type="radio" name="role" id="role-teacher" value="teacher">
+            <label for="role-teacher" class="role-label">
+              <span class="role-icon">👨‍🏫</span>
+              <span>Teacher</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:0.5rem;">Create Account</button>
+    </form>
+
+    <div class="auth-divider"><span>Already have an account?</span></div>
+    <a href="/login" class="btn btn-secondary btn-block">Sign In</a>
+  </div>
+</div>
+{% endblock %}

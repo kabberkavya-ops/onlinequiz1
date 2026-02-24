@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard — ExamEdge{% endblock %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Hello, {{ student.name }} 👋</p>
+    </div>
+    <a href="/student/exams" class="btn btn-primary">Browse Exams →</a>
+  </div>
+
+  <div class="grid-stats">
+    <div class="card-stat">
+      <div class="stat-number">{{ available_exams }}</div>
+      <div class="stat-label">Available Exams</div>
+    </div>
+    <div class="card-stat">
+      <div class="stat-number">{{ completed_exams }}</div>
+      <div class="stat-label">Completed</div>
+    </div>
+  </div>
+
+  <h2 style="font-size:1.2rem; margin-bottom:1.25rem; color:var(--text2);">Recent Results</h2>
+
+  {% if recent_results %}
+  <div class="card">
+    <div class="card-body" style="padding:0;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Exam</th>
+            <th>Score</th>
+            <th>Percentage</th>
+            <th>Date</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for result in recent_results %}
+          <tr>
+            <td style="color:var(--text);">{{ result.exam.title }}</td>
+            <td style="font-family:'DM Mono',monospace; color:var(--accent);">{{ result.obtained_marks }}/{{ result.total_marks }}</td>
+            <td>
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <div class="progress-bar" style="width:80px;">
+                  <div class="progress-fill" style="width:{{ result.percentage }}%;"></div>
+                </div>
+                <span style="font-size:0.8rem;">{{ result.percentage }}%</span>
+              </div>
+            </td>
+            <td style="color:var(--text3); font-size:0.8rem;">{{ result.attempted_at|date:"M d" }}</td>
+            <td><a href="/student/result/{{ result.exam.id }}" class="btn btn-secondary btn-sm">View</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">🎯</div>
+    <div class="empty-state-title">No exams taken yet</div>
+    <p>Start your first exam to see results here</p>
+    <a href="/student/exams" class="btn btn-primary">Browse Exams</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

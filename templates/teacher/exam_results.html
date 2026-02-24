@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Results — {{ exam.title }}{% endblock %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Exam Results</h1>
+      <p class="page-subtitle">{{ exam.title }} · {{ results.count }} submission{% if results.count != 1 %}s{% endif %}</p>
+    </div>
+    <a href="/teacher/dashboard" class="btn btn-secondary">← Dashboard</a>
+  </div>
+
+  {% if results %}
+  <div class="card">
+    <div class="card-body" style="padding:0;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Student</th>
+            <th>Marks</th>
+            <th>Percentage</th>
+            <th>Sec A</th>
+            <th>Sec B</th>
+            <th>Sec C</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in results %}
+          <tr>
+            <td style="font-family:'DM Mono',monospace; color:var(--text3);">{{ forloop.counter }}</td>
+            <td style="color:var(--text);">{{ r.student.name }}</td>
+            <td style="font-family:'DM Mono',monospace;">
+              <strong style="color:var(--accent);">{{ r.obtained_marks }}</strong>/{{ r.total_marks }}
+            </td>
+            <td>
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <div class="progress-bar" style="width:80px;">
+                  <div class="progress-fill" style="width:{{ r.percentage }}%;"></div>
+                </div>
+                <span style="font-size:0.8rem; color:var(--text2);">{{ r.percentage }}%</span>
+              </div>
+            </td>
+            <td style="font-family:'DM Mono',monospace; color:var(--text2);">{{ r.section_a_marks }}</td>
+            <td style="font-family:'DM Mono',monospace; color:var(--text2);">{{ r.section_b_marks }}</td>
+            <td style="font-family:'DM Mono',monospace; color:var(--text2);">{{ r.section_c_marks }}</td>
+            <td style="color:var(--text3); font-size:0.8rem;">{{ r.attempted_at|date:"M d, Y" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">📊</div>
+    <div class="empty-state-title">No submissions yet</div>
+    <p>Students haven't attempted this exam yet</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

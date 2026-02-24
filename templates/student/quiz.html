@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block title %}{{ exam.title }} — In Progress{% endblock %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <div>
+      <h2 style="font-family:'Playfair Display',serif; font-size:1.4rem;">{{ exam.title }}</h2>
+      <p class="page-subtitle">Answer all questions and submit before time runs out</p>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:0.75rem; color:var(--text3); margin-bottom:0.2rem;">TIME REMAINING</div>
+      <div id="timer" class="timer-value">--:--</div>
+    </div>
+  </div>
+
+  <form method="POST" id="quizForm" action="/student/quiz/{{ exam.id }}">
+    {% csrf_token %}
+    <div class="quiz-layout">
+      <!-- Questions -->
+      <div>
+        {% for section, qs in sections.items %}
+        {% if qs %}
+        <div class="question-section-label">Section {{ section }}</div>
+        {% for q in qs %}
+        <div class="question-item" id="q_{{ q.id }}">
+          <div class="question-header">
+            <span class="question-number">Question {{ forloop.counter }}</span>
+            <span class="marks-badge">{{ q.marks }} mark{% if q.marks > 1 %}s{% endif %}</span>
+          </div>
+          <p class="question-text">{{ q.question_text }}</p>
+          <div class="options-list">
+            <div class="option-item">
+              <input type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_o1" value="option1"
+                     onchange="markAnswered('{{ q.id }}')">
+              <label for="q{{ q.id }}_o1" class="option-label">
+                <span class="option-radio"></span>{{ q.option1 }}
+              </label>
+            </div>
+            <div class="option-item">
+              <input type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_o2" value="option2"
+                     onchange="markAnswered('{{ q.id }}')">
+              <label for="q{{ q.id }}_o2" class="option-label">
+                <span class="option-radio"></span>{{ q.option2 }}
+              </label>
+            </div>
+            <div class="option-item">
+              <input type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_o3" value="option3"
+                     onchange="markAnswered('{{ q.id }}')">
+              <label for="q{{ q.id }}_o3" class="option-label">
+                <span class="option-radio"></span>{{ q.option3 }}
+              </label>
+            </div>
+            <div class="option-item">
+              <input type="radio" name="question_{{ q.id }}" id="q{{ q.id }}_o4" value="option4"
+                     onchange="markAnswered('{{ q.id }}')">
+              <label for="q{{ q.id }}_o4" class="option-label">
+                <span class="option-radio"></span>{{ q.option4 }}
+              </label>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+
+        <div style="padding:1.5rem 0; display:flex; justify-content:flex-end;">
+          <button type="submit" class="btn btn-primary btn-lg"
+                  onclick="return confirm('Submit exam? You cannot retake it.')">
+            Submit Exam ✓
+          </button>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="quiz-sidebar">
+        <div class="timer-display">
+          <div style="font-size:0.7rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem;">Time Left</div>
+          <div id="sidebar-timer" class="timer-value">--:--</div>
+        </div>
+
+        <div style="font-size:0.75rem; color:var(--text3); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.08em;">
+          Questions ({{ questions|length }})
+        </div>
+        <div class="question-nav" id="questionNav">
+          {% for q in questions %}
+          <button type="button" class="q-nav-btn" id="nav_{{ q.id }}"
+                  onclick="scrollToQ('q_{{ q.id }}')">{{ forloop.counter }}</button>
+          {% endfor %}
+        </div>
+
+        <div class="divider"></div>
+        <div style="display:flex; gap:0.75rem; font-size:0.75rem; color:var(--text3); flex-wrap:wrap;">
+          <span>⬜ Unanswered</span>
+          <span>🟨 Answered</span>
+        </div>
+        <div class="divider"></div>
+        <button type="submit" class="btn btn-primary btn-block" form="quizForm"
+                onclick="return confirm('Submit exam?')">Submit</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  let seconds = {{ duration_seconds }};
+  const timerEl = document.getElementById('timer');
+  const sidebarTimer = document.getElementById('sidebar-timer');
+
+  function updateTimer() {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    const display = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    timerEl.textContent = display;
+    sidebarTimer.textContent = display;
+    if (seconds <= 60) {
+      timerEl.classList.add('warning');
+      sidebarTimer.classList.add('warning');
+    }
+    if (seconds <= 0) {
+      document.getElementById('quizForm').submit();
+      return;
+    }
+    seconds--;
+    setTimeout(updateTimer, 1000);
+  }
+  updateTimer();
+
+  function markAnswered(qid) {
+    const navBtn = document.getElementById('nav_' + qid);
+    if (navBtn) navBtn.classList.add('answered');
+  }
+
+  function scrollToQ(anchorId) {
+    const el = document.getElementById(anchorId);
+    if (el) el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  window.onbeforeunload = () => 'Are you sure? Your exam progress will be lost.';
+  document.getElementById('quizForm').addEventListener('submit', () => {
+    window.onbeforeunload = null;
+  });
+</script>
+{% endblock %}

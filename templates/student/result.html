@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Your Result — {{ exam.title }}{% endblock %}
+{% block content %}
+<div class="page-wrapper" style="max-width:700px;">
+
+  <div class="result-hero">
+    <div class="score-ring">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="60" fill="none" stroke="var(--bg3)" stroke-width="10"/>
+        <circle cx="70" cy="70" r="60" fill="none" stroke="var(--accent)" stroke-width="10"
+                stroke-dasharray="{{ result.percentage|floatformat:0|default:0 }} 100"
+                stroke-dasharray="{% widthratio result.obtained_marks result.total_marks 377 %} 377"
+                stroke-linecap="round"/>
+      </svg>
+      <div class="score-text">
+        <span class="score-percent">{{ result.percentage }}%</span>
+        <span class="score-label">Score</span>
+      </div>
+    </div>
+
+    <h1 style="font-family:'Playfair Display',serif; font-size:2rem; margin-bottom:0.5rem;">
+      {% if result.percentage >= 80 %}
+        🎉 Excellent!
+      {% elif result.percentage >= 60 %}
+        👍 Good Job!
+      {% elif result.percentage >= 40 %}
+        📚 Keep Practising
+      {% else %}
+        💪 Better Luck Next Time
+      {% endif %}
+    </h1>
+    <p style="color:var(--text3);">{{ exam.title }}</p>
+
+    <div style="display:flex; gap:2rem; justify-content:center; margin-top:1.5rem; flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="font-family:'DM Mono',monospace; font-size:1.5rem; color:var(--accent);">
+          {{ result.obtained_marks }}<span style="color:var(--text3); font-size:1rem;">/{{ result.total_marks }}</span>
+        </div>
+        <div style="font-size:0.75rem; color:var(--text3); margin-top:0.2rem;">Marks Obtained</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'DM Mono',monospace; font-size:1.5rem; color:var(--text2);">
+          {{ result.attempted_at|date:"M d, Y" }}
+        </div>
+        <div style="font-size:0.75rem; color:var(--text3); margin-top:0.2rem;">Date Attempted</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:1rem; color:var(--text2); margin-bottom:1rem; text-align:center; text-transform:uppercase; letter-spacing:0.08em; font-family:'DM Mono',monospace;">Section Breakdown</h3>
+  <div class="section-breakdown" style="margin-bottom:2rem;">
+    <div class="section-card">
+      <div class="section-title">Section A</div>
+      <div class="section-score" style="color:var(--accent);">{{ result.section_a_marks }}</div>
+      <div style="font-size:0.75rem; color:var(--text3); margin-top:0.25rem;">marks</div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">Section B</div>
+      <div class="section-score" style="color:var(--accent2);">{{ result.section_b_marks }}</div>
+      <div style="font-size:0.75rem; color:var(--text3); margin-top:0.25rem;">marks</div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">Section C</div>
+      <div class="section-score" style="color:var(--accent3);">{{ result.section_c_marks }}</div>
+      <div style="font-size:0.75rem; color:var(--text3); margin-top:0.25rem;">marks</div>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+    <a href="/student/exams" class="btn btn-secondary btn-lg">Browse More Exams</a>
+    <a href="/student/my-results" class="btn btn-primary btn-lg">All My Results</a>
+  </div>
+</div>
+{% endblock %}

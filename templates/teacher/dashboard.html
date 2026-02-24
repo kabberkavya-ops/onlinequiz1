@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Teacher Dashboard — ExamEdge{% endblock %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Welcome back, {{ teacher.name }}</p>
+    </div>
+    <a href="/teacher/add-exam" class="btn btn-primary">＋ New Exam</a>
+  </div>
+
+  <div class="grid-stats">
+    <div class="card-stat">
+      <div class="stat-number">{{ total_exams }}</div>
+      <div class="stat-label">Exams Created</div>
+    </div>
+    <div class="card-stat">
+      <div class="stat-number">{{ total_questions }}</div>
+      <div class="stat-label">Total Questions</div>
+    </div>
+    <div class="card-stat">
+      <div class="stat-number">{{ total_students }}</div>
+      <div class="stat-label">Students Attempted</div>
+    </div>
+  </div>
+
+  <h2 style="font-size:1.3rem; margin-bottom:1.25rem; color:var(--text2);">Your Exams</h2>
+
+  {% if exams %}
+  <div class="grid-cards">
+    {% for exam in exams %}
+    <div class="exam-card">
+      <div class="exam-card-top">
+        <div class="exam-card-title">{{ exam.title }}</div>
+        <div class="exam-meta">
+          <span class="exam-meta-item">⏱ {{ exam.duration }} min</span>
+          <span class="exam-meta-item">📝 {{ exam.questions.count }} questions</span>
+          <span class="exam-meta-item">📅 {{ exam.created_at|date:"M d, Y" }}</span>
+        </div>
+      </div>
+      <div class="exam-card-footer">
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <a href="/teacher/questions/{{ exam.id }}" class="btn btn-secondary btn-sm">View Questions</a>
+          <a href="/teacher/exam-results/{{ exam.id }}" class="btn btn-sm" style="background:rgba(78,205,196,0.15); color:var(--accent3); border:1px solid rgba(78,205,196,0.3);">Results</a>
+        </div>
+        <a href="/teacher/delete-exam/{{ exam.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this exam?')">🗑</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">📋</div>
+    <div class="empty-state-title">No exams yet</div>
+    <p>Create your first exam to get started</p>
+    <a href="/teacher/add-exam" class="btn btn-primary">Create Exam</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Available Exams — ExamEdge{% endblock %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Examinations</h1>
+      <p class="page-subtitle">Browse and attempt available exams</p>
+    </div>
+  </div>
+
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}" style="margin-bottom:1rem;">{{ message }}</div>
+  {% endfor %}
+  {% endif %}
+
+  {% if exams_data %}
+  <div class="grid-cards">
+    {% for item in exams_data %}
+    <div class="exam-card">
+      <div class="exam-card-top">
+        <div class="exam-card-title">{{ item.exam.title }}</div>
+        <div class="exam-meta">
+          <span class="exam-meta-item">⏱ {{ item.exam.duration }} min</span>
+          <span class="exam-meta-item">📝 {{ item.question_count }} questions</span>
+          <span class="exam-meta-item">⭐ {{ item.total_marks }} marks</span>
+        </div>
+      </div>
+      <div class="exam-card-footer">
+        {% if item.attempted %}
+          <span class="attempted-badge">✓ Completed</span>
+          <a href="/student/result/{{ item.exam.id }}" class="btn btn-secondary btn-sm">View Result</a>
+        {% else %}
+          <span style="font-size:0.8rem; color:var(--text3);">One attempt only</span>
+          <a href="/student/start/{{ item.exam.id }}" class="btn btn-primary btn-sm">Start Exam →</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">📋</div>
+    <div class="empty-state-title">No exams available</div>
+    <p>Teachers haven't published any exams yet</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
